@@ -1,19 +1,11 @@
-use ecs::Component;
-use ecs::IsComponent;
 use ecs::EcsContext;
 use ecs::EcsEventType;
 use ecs::IsEcsEvent;
 use ecs::EcsEventContext;
-use ecs::Entity;
-use ecs::EntityManager;
 use ecs::System;
-use ecs::components::ChildComponent;
 
 use std::collections::HashMap;
-use std::option;
-use std::boxed;
 use std::boxed::Box;
-use std::mem::transmute;
 use std::vec::Vec;
 use std::any::Any;
 

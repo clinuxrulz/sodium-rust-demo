@@ -1,9 +1,7 @@
 use math::Axes3D;
-use math::Mat4;
 use math::Ray3D;
 use math::Vec2;
 use math::Vec3;
-use math::Vec4;
 use math::Zero;
 use math::One;
 use math::Projection;

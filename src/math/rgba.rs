@@ -24,13 +24,13 @@ impl<A> RGBA<A> {
         }
     }
 
-    pub fn ofRGBA(red: A, green: A, blue: A, alpha: A) -> RGBA<A> {
+    pub fn of_rgba(red: A, green: A, blue: A, alpha: A) -> RGBA<A> {
         RGBA::of(red, green, blue, alpha)
     }
 }
 
 impl RGBA<u8> {
-    pub fn ofRGB(red: u8, green: u8, blue: u8) -> RGBA<u8> {
+    pub fn of_rgb(red: u8, green: u8, blue: u8) -> RGBA<u8> {
         RGBA::of(red, green, blue, 255u8)
     }
 }

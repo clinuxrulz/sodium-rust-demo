@@ -1,13 +1,10 @@
 use ecs::Component;
 use ecs::IsComponent;
 use ecs::EcsContext;
-use ecs::IsEcsEvent;
 use ecs::Entity;
-use ecs::System;
 use ecs::components::ChildComponent;
 
 use std::collections::HashMap;
-use std::option;
 use std::boxed::Box;
 use std::mem::transmute;
 use std::vec::Vec;
@@ -15,8 +12,8 @@ use std::any::Any;
 use std::ops::Fn;
 
 pub struct EntityManager {
-    nextId: u32,
-    freeIds: Vec<u32>,
+    next_id: u32,
+    free_ids: Vec<u32>,
     components: HashMap<String,HashMap<Entity,Box<Any>>>
 }
 
@@ -24,18 +21,18 @@ impl EntityManager {
 
     pub fn new() -> EntityManager {
         EntityManager {
-            nextId: 0,
-            freeIds: Vec::new(),
+            next_id: 0,
+            free_ids: Vec::new(),
             components: HashMap::new()
         }
     }
 
     pub fn create_entity(&mut self) -> Entity {
-        if let Some(id) = self.freeIds.pop() {
+        if let Some(id) = self.free_ids.pop() {
             return id;
         }
-        let id = self.nextId;
-        self.nextId = id + 1;
+        let id = self.next_id;
+        self.next_id = id + 1;
         return id;
     }
 
@@ -83,14 +80,14 @@ impl EntityManager {
     pub fn unset_component<T>(&mut self, entity: &Entity, component: Component<T>) {
         let component_type_name = component.type_name;
         if let Some(map) = self.components.get_mut(&component_type_name) {
-            let mut wasFound : bool;
+            let was_found : bool;
             if let Some(tmp) = map.get_mut(&entity) {
-                let tmp2 : Box<T> = unsafe { transmute(tmp) };
-                wasFound = true;
+                let _ : Box<T> = unsafe { transmute(tmp) };
+                was_found = true;
             } else {
-                wasFound = false;
+                was_found = false;
             }
-            if wasFound {
+            if was_found {
                 map.remove(&entity);
             }
         }
@@ -124,7 +121,7 @@ impl EntityManager {
 
 impl EcsContext for EntityManager {
 
-    fn transaction<F>(&mut self, doIt: &F)
+    fn transaction<F>(&mut self, _do_it: &F)
     where F: Fn(&mut EntityManager)
     {}
 

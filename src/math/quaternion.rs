@@ -120,25 +120,25 @@ impl<A> Quaternion<A> {
         }
     }
 
-    pub fn ofUV(u: &Vec3<A>, v: &Vec3<A>) -> Quaternion<A>
+    pub fn of_uv(u: &Vec3<A>, v: &Vec3<A>) -> Quaternion<A>
     where A: Copy + Zero + One + Add<Output=A> + Sub<Output=A> + Mul<Output=A> + Div<Output=A> + Sqrt<Output=A> + PartialOrd
     {
-        Quaternion::ofUVW(u, v, &u.cross(v))
+        Quaternion::of_uvw(u, v, &u.cross(v))
     }
 
-    pub fn ofVW(v: &Vec3<A>, w: &Vec3<A>) -> Quaternion<A>
+    pub fn of_vw(v: &Vec3<A>, w: &Vec3<A>) -> Quaternion<A>
     where A: Copy + Zero + One + Add<Output=A> + Sub<Output=A> + Mul<Output=A> + Div<Output=A> + Sqrt<Output=A> + PartialOrd
     {
-        Quaternion::ofUVW(&v.cross(w), v, w)
+        Quaternion::of_uvw(&v.cross(w), v, w)
     }
 
-    pub fn ofWU(w: &Vec3<A>, u: &Vec3<A>) -> Quaternion<A>
+    pub fn of_wu(w: &Vec3<A>, u: &Vec3<A>) -> Quaternion<A>
     where A: Copy + Zero + One + Add<Output=A> + Sub<Output=A> + Mul<Output=A> + Div<Output=A> + Sqrt<Output=A> + PartialOrd
     {
-        Quaternion::ofUVW(u, &w.cross(u), w)
+        Quaternion::of_uvw(u, &w.cross(u), w)
     }
 
-    fn ofUVW(u: &Vec3<A>, v: &Vec3<A>, w: &Vec3<A>) -> Quaternion<A>
+    fn of_uvw(u: &Vec3<A>, v: &Vec3<A>, w: &Vec3<A>) -> Quaternion<A>
     where A: Copy + Zero + One + Add<Output=A> + Sub<Output=A> + Mul<Output=A> + Div<Output=A> + Sqrt<Output=A> + PartialOrd
     {
         let zero = A::zero();
@@ -161,29 +161,29 @@ impl<A> Quaternion<A> {
         let qy;
         let qz;
         if tr > zero {
-            let S = (tr + one).sqrt() * two; // S=4*qw
-            qw = quater * S;
-            qx = (m21 - m12) / S;
-            qy = (m02 - m20) / S;
-            qz = (m10 - m01) / S;
+            let s = (tr + one).sqrt() * two; // S=4*qw
+            qw = quater * s;
+            qx = (m21 - m12) / s;
+            qy = (m02 - m20) / s;
+            qz = (m10 - m01) / s;
         } else if (m00 > m11) & (m00 > m22) {
-            let S = (one + m00 - m11 - m22).sqrt() * two; // S=4*qx
-            qw = (m21 - m12) / S;
-            qx = quater * S;
-            qy = (m01 + m10) / S;
-            qz = (m02 + m20) / S;
+            let s = (one + m00 - m11 - m22).sqrt() * two; // S=4*qx
+            qw = (m21 - m12) / s;
+            qx = quater * s;
+            qy = (m01 + m10) / s;
+            qz = (m02 + m20) / s;
         } else if m11 > m22 {
-            let S = (one + m11 - m00 - m22).sqrt() * two; // S=4*qy
-            qw = (m02 - m20) / S;
-            qx = (m01 + m10) / S;
-            qy = quater * S;
-            qz = (m12 + m21) / S;
+            let s = (one + m11 - m00 - m22).sqrt() * two; // S=4*qy
+            qw = (m02 - m20) / s;
+            qx = (m01 + m10) / s;
+            qy = quater * s;
+            qz = (m12 + m21) / s;
         } else {
-            let S = (one + m22 - m00 - m11).sqrt() * two; // S=4*qz
-            qw = (m10 - m01) / S;
-            qx = (m02 + m20) / S;
-            qy = (m12 + m21) / S;
-            qz = quater * S;
+            let s = (one + m22 - m00 - m11).sqrt() * two; // S=4*qz
+            qw = (m10 - m01) / s;
+            qx = (m02 + m20) / s;
+            qy = (m12 + m21) / s;
+            qz = quater * s;
         }
         Quaternion::of(qw, qx, qy, qz)
     }
@@ -267,8 +267,8 @@ impl<A> Quaternion<A> {
         // Compute the cosine of the angle between the two vectors.
         let mut dot = v0.dot(&v1);
 
-        let DOT_THRESHOLD: A = 0.9995f32.into();
-        if dot > DOT_THRESHOLD {
+        let dot_threshold: A = 0.9995f32.into();
+        if dot > dot_threshold {
             // If the inputs are too close for comfort, linearly interpolate
             // and normalize the result.
 

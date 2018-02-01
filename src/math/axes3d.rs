@@ -1,5 +1,4 @@
 use std::ops::{Add, Sub, Mul, Neg};
-use std::convert;
 
 use math::Vec3;
 use math::Quaternion;

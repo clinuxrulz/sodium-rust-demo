@@ -3,8 +3,6 @@ use math::Zero;
 use math::Vec4;
 
 use std::ops::{Neg, Add, Sub, Mul, Div};
-use std::fmt;
-use std::convert;
 use std::cmp::PartialEq;
 
 #[derive(Copy, Clone)]
@@ -211,17 +209,17 @@ impl<A: Copy> Mat4<A> {
         right: A,
         bottom: A,
         top: A,
-        nearVal: A,
-        farVal: A
+        near_val: A,
+        far_val: A
     ) -> Mat4<A>
     where A: Copy + Zero + One + Neg<Output=A> + Add<A,Output=A> + Sub<A,Output=A> + Mul<A,Output=A> + Div<A,Output=A>
     {
         let two = A::one() + A::one();
         Mat4 {
             cells: [
-                two * nearVal / (right - left), A::zero(), (left + right) / (right - left), A::zero(),
-                A::zero(), two * nearVal / (top - bottom), (bottom + top) / (top - bottom), A::zero(),
-                A::zero(), A::zero(), -(farVal + nearVal) / (farVal - nearVal), -two * farVal * nearVal / (farVal - nearVal),
+                two * near_val / (right - left), A::zero(), (left + right) / (right - left), A::zero(),
+                A::zero(), two * near_val / (top - bottom), (bottom + top) / (top - bottom), A::zero(),
+                A::zero(), A::zero(), -(far_val + near_val) / (far_val - near_val), -two * far_val * near_val / (far_val - near_val),
                 A::zero(), A::zero(), -A::one(), A::zero()
             ]
         }
@@ -232,8 +230,8 @@ impl<A: Copy> Mat4<A> {
         right: A,
         bottom: A,
         top: A,
-        nearVal: A,
-        farVal: A
+        near_val: A,
+        far_val: A
     ) -> Mat4<A>
     where A: Copy + Zero + One + Neg<Output=A> + Add<A,Output=A> + Sub<A,Output=A> + Mul<A,Output=A> + Div<A,Output=A>
     {
@@ -242,7 +240,7 @@ impl<A: Copy> Mat4<A> {
             cells: [
                 two / (right - left), A::zero(), A::zero(), -(right + left) / (right - left),
                 A::zero(), two / (top - bottom), A::zero(), -(top + bottom) / (top - bottom),
-                A::zero(), A::zero(), -two / (farVal - nearVal), -(farVal + nearVal) / (farVal - nearVal),
+                A::zero(), A::zero(), -two / (far_val - near_val), -(far_val + near_val) / (far_val - near_val),
                 A::zero(), A::zero(), A::zero(), A::one()
             ]
         }

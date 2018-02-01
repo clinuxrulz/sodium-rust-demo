@@ -1,9 +1,12 @@
+#![allow(dead_code)]
+
 extern crate rusty_frp;
 
 pub use rusty_frp::sodium;
 use sodium::SodiumCtx;
-pub mod math;
 pub mod ecs;
+pub mod drivers;
+pub mod math;
 
 fn main() {
     let mut sodium_ctx = SodiumCtx::new();

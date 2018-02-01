@@ -31,7 +31,7 @@ impl EcsManager {
         }
     }
 
-    pub fn add_system<SYSTEM>(&mut self, mut system: SYSTEM)
+    pub fn add_system<SYSTEM>(&mut self, system: SYSTEM)
     where
     SYSTEM: System<EntityManager,EventHandlers<EntityManager>>
     {
@@ -56,11 +56,11 @@ impl EcsManager {
 
 impl EcsContext for EcsManager {
 
-    fn transaction<F>(&mut self, doIt: &F)
+    fn transaction<F>(&mut self, do_it: &F)
     where F: Fn(&mut EcsManager)
     {
         self.transaction_depth = self.transaction_depth + 1;
-        doIt(self);
+        do_it(self);
         self.transaction_depth = self.transaction_depth - 1;
         let tdepth = self.transaction_depth;
         if tdepth == 0 {
