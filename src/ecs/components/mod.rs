@@ -1,11 +1,21 @@
 pub use self::axes3d_component::Axes3DComponent;
 pub use self::box_component::BoxComponent;
 pub use self::child_component::ChildComponent;
+pub use self::circle_component::CircleComponent;
 pub use self::colour_component::ColourComponent;
 pub use self::line_component::LineComponent;
+pub use self::player_component::PlayerComponent;
+pub use self::way_point_edge_component::WayPointEdgeComponent;
+pub use self::way_point_node_component::WayPointNodeComponent;
+pub use self::zombie_component::ZombieComponent;
 
 mod axes3d_component;
 mod box_component;
 mod child_component;
+mod circle_component;
 mod colour_component;
 mod line_component;
+mod player_component;
+mod way_point_edge_component;
+mod way_point_node_component;
+mod zombie_component;
