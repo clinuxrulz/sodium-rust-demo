@@ -1,0 +1,7 @@
+[package]
+name = "sodium-rust-demo"
+version = "0.1.0"
+authors = ["Clinton Selke <clinuxrulz@gmail.com>"]
+
+[dependencies]
+rusty-frp = { git = "https://github.com/SodiumFRP/sodium-rust.git" }
