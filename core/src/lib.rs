@@ -10,10 +10,12 @@ mod app_ctx;
 
 use app_ctx::AppCtx;
 
-extern fn create_app_ctx() -> *mut AppCtx {
+#[no_mangle]
+pub extern "C" fn create_app_ctx() -> *mut AppCtx {
     Box::into_raw(Box::new(AppCtx::new()))
 }
 
-extern fn destroy_app_ctx(app_ctx: *mut AppCtx) {
+#[no_mangle]
+pub extern "C" fn destroy_app_ctx(app_ctx: *mut AppCtx) {
     unsafe { Box::from_raw(app_ctx) };
 }
