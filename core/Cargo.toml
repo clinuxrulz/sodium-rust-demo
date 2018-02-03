@@ -5,3 +5,7 @@ authors = ["Clinton Selke <clinuxrulz@gmail.com>"]
 
 [dependencies]
 rusty-frp = { git = "https://github.com/SodiumFRP/sodium-rust.git" }
+
+[lib]
+path = "src/lib.rs"
+crate-type = ["cdylib"]
