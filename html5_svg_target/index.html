@@ -30,10 +30,43 @@
                 return WebAssembly.compile(bytes).then(m => new WebAssembly.Instance(m, imports));
             }
 
+            var display_obj_map = [];
+            var display_obj_map_free_ids = [];
+            var svgns = "http://www.w3.org/2000/svg";
+
+            var display_obj_map_new_id = function() {
+                if (display_obj_map_free_ids.length > 0) {
+                    return display_obj_map_free_ids.pop();
+                } else {
+                    return display_obj_map.length;
+                }
+            };
+
+            var display_obj_map_free_id = function(id) {
+                display_obj_map_free_ids.push(id);
+            };
+
             var importObject = {
-                imports: {
+                env: {
                     log: function(arg) {
                       console.log(arg);
+                    },
+                    display_add_circle: function(x, y, r) {
+                        var display = document.getElementById("display");
+                        var circle = document.createElementNS(svgns, "circle");
+                        circle.setAttributeNS(null, "cx", x);
+                        circle.setAttributeNS(null, "cy", y);
+                        circle.setAttributeNS(null, "r", r);
+                        display.appendChild(circle);
+                        var id = display_obj_map_new_id();
+                        display_obj_map[id] = circle;
+                        return id;
+                    },
+                    display_remove: function(id) {
+                        var display = document.getElementById("display");
+                        display.removeChild(display_obj_map[id]);
+                        display_obj_map[id] = null;
+                        display_obj_map_free_id(id);
                     }
                   }
                 };
@@ -42,8 +75,9 @@
                 .then(response => response.arrayBuffer())
                 .then(bytes => WebAssembly.instantiate(bytes, importObject))
                 .then(results => {
-                    var app = null;
-                    //app = results.instance.exports.create_app();
+                    //var app = results.instance.exports.create_app();
+                    var test = results.instance.exports.test;
+                    test();
                 });
         </script>
         <svg id="display" class="display">
