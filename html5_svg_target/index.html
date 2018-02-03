@@ -25,6 +25,27 @@
     </head>
     <body>
         <script src="display_driver.js"></script>
+        <script>
+            function instantiate(bytes, imports) {
+                return WebAssembly.compile(bytes).then(m => new WebAssembly.Instance(m, imports));
+            }
+
+            var importObject = {
+                imports: {
+                    log: function(arg) {
+                      console.log(arg);
+                    }
+                  }
+                };
+            
+            fetch('sodium-rust-demo.wasm')
+                .then(response => response.arrayBuffer())
+                .then(bytes => WebAssembly.instantiate(bytes, importObject))
+                .then(results => {
+                    var app = null;
+                    //app = results.instance.exports.create_app();
+                });
+        </script>
         <svg id="display" class="display">
         </svg>
     </body>
