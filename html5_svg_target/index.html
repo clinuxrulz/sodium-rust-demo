@@ -80,9 +80,10 @@
                 .then(response => response.arrayBuffer())
                 .then(bytes => WebAssembly.instantiate(bytes, importObject))
                 .then(results => {
-                    //var app = results.instance.exports.create_app();
+                    var create_app_ctx = results.instance.exports.create_app_ctx;
                     var test = results.instance.exports.test;
-                    test();
+                    var app_ctx = create_app_ctx();
+                    test(app_ctx);
                 });
         </script>
         <svg id="display" class="display">
