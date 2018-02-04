@@ -2,7 +2,7 @@ use sodium::Stream;
 use math::Vec2;
 
 pub struct InputDriver {
-    pub tick: Stream<u32>, // u32 represents milliseconds since last tick
+    pub tick: Stream<f64>, // u32 represents milliseconds since last tick
     pub key_pressed: Stream<u32>,
     pub key_released: Stream<u32>,
     pub mouse_moved: Stream<Vec2<f64>>,

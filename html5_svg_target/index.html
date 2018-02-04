@@ -82,7 +82,43 @@
                 .then(results => {
                     var create_app_ctx = results.instance.exports.create_app_ctx;
                     var test = results.instance.exports.test;
+                    var input_tick = results.instance.exports.input_tick;
+                    var input_key_pressed = results.instance.exports.input_key_pressed;
+                    var input_key_released = results.instance.exports.input_key_released;
+                    var input_mouse_moved = results.instance.exports.input_mouse_moved;
+                    var input_mouse_exited = results.instance.exports.input_mouse_exited;
+                    var input_mouse_pressed = results.instance.exports.input_mouse_pressed;
+                    var input_mouse_released = results.instance.exports.input_mouse_released;
                     var app_ctx = create_app_ctx();
+                    var display = document.getElementById("display");
+                    var last_timestamp = null;
+                    var tick_tock = function(timestamp) {
+                        if (last_timestamp != null) {
+                            var delta = timestamp - last_timestamp;
+                            input_tick(app_ctx);
+                        }
+                        last_timestamp = timestamp;
+                        requestAnimationFrame(tick_tock);
+                    };
+                    requestAnimationFrame(tick_tock);
+                    document.addEventListener("keydown", function(e) {
+                        input_key_pressed(app_ctx, e.keyCode);
+                    });
+                    document.addEventListener("keyup", function(e) {
+                        input_key_released(app_ctx, e.keyCode);
+                    });
+                    display.addEventListener("mousemove", function(e) {
+                        input_mouse_moved(app_ctx, e.clientX, e.clientY);
+                    });
+                    display.addEventListener("mouseleave", function(e) {
+                        input_mouse_exited(app_ctx);
+                    });
+                    display.addEventListener("mousedown", function(e) {
+                        input_mouse_pressed(app_ctx, e.buttons);
+                    });
+                    display.addEventListener("mouseup", function(e) {
+                        input_mouse_released(app_ctx, e.buttons);
+                    });
                     test(app_ctx);
                 });
         </script>

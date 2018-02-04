@@ -58,7 +58,7 @@ pub extern "C" fn test(app_ctx: &mut AppCtx) {
 // Input Driver Exports
 
 #[no_mangle]
-pub extern "C" fn input_tick(app_ctx: &mut AppCtx, ms: u32) {
+pub extern "C" fn input_tick(app_ctx: &mut AppCtx, ms: f64) {
     app_ctx.input_tick(ms);
 }
 

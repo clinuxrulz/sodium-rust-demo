@@ -11,7 +11,7 @@ pub struct AppCtx {
     pub input_driver: InputDriver,
     pub display_driver: Box<DisplayDriver>,
     // Input Driver StreamSinks
-    ss_input_tick: StreamSink<u32>,
+    ss_input_tick: StreamSink<f64>,
     ss_input_key_pressed: StreamSink<u32>,
     ss_input_key_released: StreamSink<u32>,
     ss_input_mouse_moved: StreamSink<Vec2<f64>>,
@@ -53,7 +53,7 @@ impl AppCtx {
         }
     }
 
-    pub fn input_tick(&mut self, ms: u32) {
+    pub fn input_tick(&mut self, ms: f64) {
         self.ss_input_tick.send(&ms);
     }
 
