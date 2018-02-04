@@ -11,7 +11,8 @@ mod app_ctx;
 use app_ctx::AppCtx;
 
 extern {
-    fn display_add_circle(x: u32, y: u32, r: u32) -> u32;
+    fn display_add_circle(x: f64, y: f64, r: f64) -> u32;
+    fn display_move_circle(id: u32, x: f64, y: f64);
     fn display_remove(id: u32);
 }
 
@@ -28,6 +29,7 @@ pub extern "C" fn destroy_app_ctx(app_ctx: *mut AppCtx) {
 #[no_mangle]
 pub extern "C" fn test() {
     unsafe {
-        display_add_circle(50, 50, 10);
+        let circle = display_add_circle(50.0, 50.0, 10.0);
+        display_move_circle(circle, 100.0, 100.0);
     }
 }

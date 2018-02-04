@@ -62,6 +62,11 @@
                         display_obj_map[id] = circle;
                         return id;
                     },
+                    display_move_circle: function(id, x, y) {
+                        var circle = display_obj_map[id];
+                        circle.setAttributeNS(null, "cx", x);
+                        circle.setAttributeNS(null, "cy", y);
+                    },
                     display_remove: function(id) {
                         var display = document.getElementById("display");
                         display.removeChild(display_obj_map[id]);
@@ -71,7 +76,7 @@
                   }
                 };
             
-            fetch('sodium-rust-demo.wasm')
+            fetch('sodium_rust_demo.wasm')
                 .then(response => response.arrayBuffer())
                 .then(bytes => WebAssembly.instantiate(bytes, importObject))
                 .then(results => {
