@@ -34,13 +34,13 @@ impl AppCtx {
         let ss_input_mouse_pressed = sodium_ctx.new_stream_sink();
         let ss_input_mouse_released = sodium_ctx.new_stream_sink();
         let input_driver = InputDriver {
-            tick: ss_input_tick.stream(),
-            key_pressed: ss_input_key_pressed.stream(),
-            key_released: ss_input_key_released.stream(),
-            mouse_moved: ss_input_mouse_moved.stream(),
-            mouse_exited: ss_input_mouse_exited.stream(),
-            mouse_pressed: ss_input_mouse_pressed.stream(),
-            mouse_released: ss_input_mouse_released.stream()
+            s_tick: ss_input_tick.stream(),
+            s_key_pressed: ss_input_key_pressed.stream(),
+            s_key_released: ss_input_key_released.stream(),
+            s_mouse_moved: ss_input_mouse_moved.stream(),
+            s_mouse_exited: ss_input_mouse_exited.stream(),
+            s_mouse_pressed: ss_input_mouse_pressed.stream(),
+            s_mouse_released: ss_input_mouse_released.stream()
         };
         AppCtx {
             sodium_ctx: sodium_ctx,
