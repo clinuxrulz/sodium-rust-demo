@@ -6,10 +6,13 @@ use sodium::SodiumCtx;
 use sodium::StreamSink;
 use sodium::IsStream;
 
+use std::cell::RefCell;
+use std::rc::Rc;
+
 pub struct AppCtx {
     pub sodium_ctx: SodiumCtx,
     pub input_driver: InputDriver,
-    pub display_driver: Box<DisplayDriver>,
+    pub display_driver: Rc<RefCell<DisplayDriver>>,
     // Input Driver StreamSinks
     ss_input_tick: StreamSink<f64>,
     ss_input_key_pressed: StreamSink<u32>,
@@ -42,7 +45,7 @@ impl AppCtx {
         AppCtx {
             sodium_ctx: sodium_ctx,
             input_driver,
-            display_driver: Box::new(display_driver),
+            display_driver: Rc::new(RefCell::new(display_driver)),
             ss_input_tick,
             ss_input_key_pressed,
             ss_input_key_released,

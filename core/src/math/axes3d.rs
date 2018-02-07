@@ -3,6 +3,7 @@ use std::ops::{Add, Sub, Mul, Neg};
 use math::Vec3;
 use math::Quaternion;
 use math::Zero;
+use math::One;
 
 #[derive(Copy, Clone)]
 pub struct Axes3D<A> {
@@ -11,6 +12,15 @@ pub struct Axes3D<A> {
 }
 
 impl<A> Axes3D<A> {
+
+    pub fn identity() -> Axes3D<A>
+    where A: Zero + One
+    {
+        Axes3D {
+            origin: Vec3::of(A::zero(), A::zero(), A::zero()),
+            orientation: Quaternion::identity()
+        }
+    }
 
     pub fn point_from_space(&self, point: &Vec3<A>) -> Vec3<A>
     where

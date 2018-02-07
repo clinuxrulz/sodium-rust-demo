@@ -50,7 +50,7 @@ pub extern "C" fn destroy_app_ctx(app_ctx: *mut AppCtx) {
 
 #[no_mangle]
 pub extern "C" fn test(app_ctx: &mut AppCtx) {
-    let display_driver = &mut app_ctx.display_driver;
+    let mut display_driver = app_ctx.display_driver.borrow_mut();
     let circle = display_driver.add_circle(50.0, 50.0, 10.0);
     display_driver.move_circle(circle, 100.0, 100.0);
 }

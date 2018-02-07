@@ -111,6 +111,17 @@ impl<A: Neg<Output=A>> Neg for Quaternion<A> {
 
 impl<A> Quaternion<A> {
 
+    pub fn identity() -> Quaternion<A>
+    where A: Zero + One
+    {
+        Quaternion {
+            w: A::one(),
+            x: A::zero(),
+            y: A::zero(),
+            z: A::zero()
+        }
+    }
+
     pub fn of(w: A, x: A, y: A, z: A) -> Quaternion<A> {
         Quaternion {
             w: w,
