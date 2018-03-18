@@ -121,8 +121,8 @@ impl EntityManager {
 
 impl EcsContext for EntityManager {
 
-    fn transaction<F>(&mut self, _do_it: &F)
-    where F: Fn(&mut EntityManager)
+    fn transaction<F>(&mut self, _do_it: F)
+    where F: FnOnce(&mut EntityManager)
     {}
 
     fn get_component<T: Clone + 'static>(&self, entity: &Entity, component: Component<T>) -> Option<T> {

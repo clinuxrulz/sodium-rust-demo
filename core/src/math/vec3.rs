@@ -1,6 +1,11 @@
+use math::Zero;
+
 use std::ops::{Add, Sub, Mul};
 use std::fmt;
 use std::convert;
+use std::cmp::PartialEq;
+use std::cmp::Eq;
+use std::ops::AddAssign;
 
 #[derive(Copy, Clone)]
 pub struct Vec3<A> {
@@ -9,9 +14,31 @@ pub struct Vec3<A> {
     pub z: A
 }
 
+impl<A: Zero> Zero for Vec3<A> {
+    fn zero() -> Self {
+        Vec3::of(A::zero(), A::zero(), A::zero())
+    }
+}
+
+impl<A: PartialEq> PartialEq for Vec3<A> {
+    fn eq(&self, other: &Self) -> bool {
+        self.x == other.x && self.y == other.y && self.z == other.z
+    }
+}
+
+impl<A: Eq> Eq for Vec3<A> {}
+
 impl<A: fmt::Display> fmt::Display for Vec3<A> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "({}, {}, {})", self.x, self.y, self.z)
+    }
+}
+
+impl<A: AddAssign> AddAssign for Vec3<A> {
+    fn add_assign(&mut self, rhs: Self) {
+        self.x += rhs.x;
+        self.y += rhs.y;
+        self.z += rhs.z;
     }
 }
 

@@ -9,13 +9,29 @@ pub mod math;
 mod app_ctx;
 
 use app_ctx::AppCtx;
+use drivers::DiagDriver;
 use drivers::DisplayDriver;
 use math::Vec2;
 
+use std::ffi::CString;
+use std::os::raw::c_char;
+
 extern {
+
+    fn log_(text: *const c_char, len: u32);
+
     fn display_add_circle(x: f64, y: f64, r: f64) -> u32;
     fn display_move_circle(id: u32, x: f64, y: f64);
     fn display_remove(id: u32);
+}
+
+fn log<S: ToString>(text: S) {
+    let text = text.to_string();
+    let len = text.len() as u32;
+    let text2 = CString::new(text).unwrap();
+    unsafe {
+        log_(text2.as_ptr(), len);
+    }
 }
 
 struct DisplayViaImports {}
@@ -38,9 +54,18 @@ impl DisplayDriver for DisplayViaImports {
     }
 }
 
+struct DiagViaImports {}
+
+impl DiagDriver for DiagViaImports {
+    fn log_string(&mut self, msg: String) {
+        log(msg);
+    }
+}
+
 #[no_mangle]
 pub extern "C" fn create_app_ctx() -> *mut AppCtx {
-    Box::into_raw(Box::new(AppCtx::new(DisplayViaImports {})))
+    log("App Created");
+    Box::into_raw(Box::new(AppCtx::new(DiagViaImports {}, DisplayViaImports {})))
 }
 
 #[no_mangle]
@@ -50,9 +75,9 @@ pub extern "C" fn destroy_app_ctx(app_ctx: *mut AppCtx) {
 
 #[no_mangle]
 pub extern "C" fn test(app_ctx: &mut AppCtx) {
-    let mut display_driver = app_ctx.display_driver.borrow_mut();
-    let circle = display_driver.add_circle(50.0, 50.0, 10.0);
-    display_driver.move_circle(circle, 100.0, 100.0);
+    //let mut display_driver = app_ctx.display_driver.borrow_mut();
+    //let circle = display_driver.add_circle(50.0, 50.0, 10.0);
+    //display_driver.move_circle(circle, 100.0, 100.0);
 }
 
 // Input Driver Exports
@@ -69,7 +94,7 @@ pub extern "C" fn input_key_pressed(app_ctx: &mut AppCtx, key_code: u32) {
 
 #[no_mangle]
 pub extern "C" fn input_key_released(app_ctx: &mut AppCtx, key_code: u32) {
-    app_ctx.input_key_pressed(key_code);
+    app_ctx.input_key_released(key_code);
 }
 
 #[no_mangle]

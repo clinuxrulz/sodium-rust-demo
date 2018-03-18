@@ -6,12 +6,18 @@ use ecs::Entity;
 use ecs::IsComponent;
 use ecs::IsEcsEvent;
 use ecs::System;
+use ecs::components::Axes3DComponent;
 use ecs::components::PlayerComponent;
 use ecs::events::ComponentSetEvent;
 use ecs::events::ComponentUnsetEvent;
+use math::Axes3D;
+use math::Vec3;
+use math::Zero;
 
 use sodium::IsStream;
 use sodium::Listener;
+use sodium::Stream;
+use sodium::IsStreamOption;
 
 use std::cell::RefCell;
 use std::collections::HashSet;
@@ -24,7 +30,7 @@ pub struct InputSystem {
 }
 
 impl InputSystem {
-    fn new(input_driver: Rc<RefCell<InputDriver>>, ecs_manager: Rc<RefCell<EcsManager>>) -> InputSystem {
+    pub fn new(input_driver: Rc<RefCell<InputDriver>>, ecs_manager: Rc<RefCell<EcsManager>>) -> InputSystem {
         let input_driver = input_driver.borrow();
         const LEFT_KEY_CODE: u32 = 37;
         const RIGHT_KEY_CODE: u32 = 39;
@@ -46,10 +52,75 @@ impl InputSystem {
             key_code_pressed(LEFT_KEY_CODE).map_to(true)
                 .or_else(&key_code_released(LEFT_KEY_CODE).map_to(false))
                 .hold(false);
-        let keep_alive = Vec::new();
+        let c_right_key_down =
+            key_code_pressed(RIGHT_KEY_CODE).map_to(true)
+                .or_else(&key_code_released(RIGHT_KEY_CODE).map_to(false))
+                .hold(false);
+        let c_up_key_down =
+            key_code_pressed(UP_KEY_CODE).map_to(true)
+                .or_else(&key_code_released(UP_KEY_CODE).map_to(false))
+                .hold(false);
+        let c_down_key_down =
+            key_code_pressed(DOWN_KEY_CODE).map_to(true)
+                .or_else(&key_code_released(DOWN_KEY_CODE).map_to(false))
+                .hold(false);
+        let s_movement: Stream<Vec3<f64>> =
+            input_driver.s_tick
+                .snapshot4(
+                    &c_left_key_down,
+                    &c_right_key_down,
+                    &c_up_key_down,
+                    &c_down_key_down,
+                    |_tick: &f64, left_key_down: &bool, right_key_down: &bool, up_key_down: &bool, down_key_down: &bool| {
+                        let mut movement = Vec3::<f64>::zero();
+                        let mut moved = false;
+                        if *left_key_down {
+                            movement += Vec3::of(-1.0, 0.0, 0.0);
+                        }
+                        if *right_key_down {
+                            movement += Vec3::of(1.0, 0.0, 0.0);
+                        }
+                        if *up_key_down {
+                            movement += Vec3::of(0.0, 1.0, 0.0);
+                        }
+                        if *down_key_down {
+                            movement += Vec3::of(0.0, -1.0, 0.0);
+                        }
+                        if movement != Vec3::zero() {
+                            return Some(movement);
+                        } else {
+                            return None;
+                        }
+                    }
+                )
+                .filter_option();
+        let mut keep_alive = Vec::new();
+        let player_set = Rc::new(RefCell::new(HashSet::new()));
+        {
+            let ecs_manager = ecs_manager.clone();
+            let player_set = player_set.clone();
+            keep_alive.push(s_movement.listen(
+                move |movement: &Vec3<f64>| {
+                    let mut ecs_manager = ecs_manager.borrow_mut();
+                    let player_set = player_set.borrow();
+                    for player in player_set.iter() {
+                        let axes_op = ecs_manager.get_component(player, Axes3DComponent::component());
+                        if let Some(Axes3DComponent { axes }) = axes_op {
+                            let axes2 = Axes3DComponent {
+                                axes: Axes3D {
+                                    origin: axes.origin + *movement,
+                                    orientation: axes.orientation
+                                }
+                            };
+                            ecs_manager.set_component(player, axes2);
+                        }
+                    }
+                }
+            ));
+        }
         InputSystem {
             ecs_manager,
-            player_set: Rc::new(RefCell::new(HashSet::new())),
+            player_set: player_set,
             keep_alive
         }
     }

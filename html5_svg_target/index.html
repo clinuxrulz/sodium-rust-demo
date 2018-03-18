@@ -30,6 +30,8 @@
                 return WebAssembly.compile(bytes).then(m => new WebAssembly.Instance(m, imports));
             }
 
+            var wasm;
+
             var display_obj_map = [];
             var display_obj_map_free_ids = [];
             var svgns = "http://www.w3.org/2000/svg";
@@ -48,8 +50,13 @@
 
             var importObject = {
                 env: {
-                    log: function(arg) {
-                      console.log(arg);
+                    log_: function(str, len) {
+                        var mem = new Uint8Array(wasm.exports.memory.buffer);
+                        var r = "";
+                        for (var i = 0; i < len; ++i) {
+                            r += String.fromCharCode(mem[str + i]);
+                        }
+                        console.log(r + "\n");
                     },
                     display_add_circle: function(x, y, r) {
                         var display = document.getElementById("display");
@@ -80,6 +87,7 @@
                 .then(response => response.arrayBuffer())
                 .then(bytes => WebAssembly.instantiate(bytes, importObject))
                 .then(results => {
+                    wasm = results.instance;
                     var create_app_ctx = results.instance.exports.create_app_ctx;
                     var test = results.instance.exports.test;
                     var input_tick = results.instance.exports.input_tick;

@@ -48,7 +48,7 @@ impl EcsManager {
     }
 
     pub fn test(&mut self) {
-        self.transaction(&|ecs_ctx| {
+        self.transaction(|ecs_ctx| {
             ecs_ctx.create_entity();
         });
     }
@@ -56,8 +56,8 @@ impl EcsManager {
 
 impl EcsContext for EcsManager {
 
-    fn transaction<F>(&mut self, do_it: &F)
-    where F: Fn(&mut EcsManager)
+    fn transaction<F>(&mut self, do_it: F)
+    where F: FnOnce(&mut EcsManager)
     {
         self.transaction_depth = self.transaction_depth + 1;
         do_it(self);

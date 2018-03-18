@@ -7,8 +7,8 @@ use std::ops::Fn;
 
 pub trait EcsContext {
 
-    fn transaction<F>(&mut self, do_it: &F)
-    where F: Fn(&mut Self);
+    fn transaction<F>(&mut self, do_it: F)
+    where F: FnOnce(&mut Self);
 
     fn get_component<T: Clone + 'static>(&self, entity: &Entity, component: Component<T>) -> Option<T>;
 
